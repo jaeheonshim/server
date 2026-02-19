@@ -1020,3 +1020,20 @@ SET optimizer_trace= @save_optimizer_trace;
 #
 # End of 10.11 tests
 #
+#
+# MDEV-38649: Wrong result (missing rows) upon condition pushdown on table with DESC key
+#
+CREATE TABLE t1 (a INT, b INT, KEY(b DESC));
+INSERT INTO t1 VALUES (2,8),(9,1),(4,6);
+SELECT a, b FROM t1 GROUP BY b HAVING b != 0 ORDER BY a;
+a	b
+set optimizer_switch = 'condition_pushdown_from_having=off';
+SELECT a, b FROM t1 GROUP BY b HAVING b != 0 ORDER BY a;
+a	b
+2	8
+4	6
+9	1
+DROP TABLE t1;
+#
+# End of 12.3 tests
+#
