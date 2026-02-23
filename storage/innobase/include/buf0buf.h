@@ -1797,6 +1797,10 @@ public:
 					to read this for heuristic
 					purposes without holding any
 					mutex or latch */
+#ifdef __linux__
+  /** whether to use MAP_POPULATE for the allocation */
+  my_bool commit;
+#endif
   /** Cleared when buf_LRU_get_free_block() fails.
   Set whenever the free list grows, along with a broadcast of done_free.
   Protected by buf_pool.mutex. */
