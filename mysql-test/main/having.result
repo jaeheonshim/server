@@ -1027,6 +1027,9 @@ CREATE TABLE t1 (a INT, b INT, KEY(b DESC));
 INSERT INTO t1 VALUES (2,8),(9,1),(4,6);
 SELECT a, b FROM t1 GROUP BY b HAVING b != 0 ORDER BY a;
 a	b
+2	8
+4	6
+9	1
 set optimizer_switch = 'condition_pushdown_from_having=off';
 SELECT a, b FROM t1 GROUP BY b HAVING b != 0 ORDER BY a;
 a	b
