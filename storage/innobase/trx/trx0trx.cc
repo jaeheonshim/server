@@ -2269,3 +2269,12 @@ trx_set_rw_mode(
 		trx->read_view.set_creator_trx_id(trx->id);
 	}
 }
+
+void trx_t::reset_and_truncate_undo(const dict_table_t *table) noexcept
+{
+	ut_ad(undo_no <= 1);
+	ut_ad(mod_tables.size() == 0 || mod_tables.begin()->first == table);
+	mod_tables.clear();
+	undo_no= 0;
+	trx_undo_try_truncate(*this);
+}

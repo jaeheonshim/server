@@ -223,12 +223,13 @@ enum ha_extra_function {
     that we are starting an ordered index scan. Needed by Spider
   */
   HA_EXTRA_STARTING_ORDERED_INDEX_SCAN,
-  /** Start writing rows during ALTER TABLE...ALGORITHM=COPY. */
-  HA_EXTRA_BEGIN_ALTER_COPY,
-  /** Finish writing rows during ALTER TABLE...ALGORITHM=COPY. */
-  HA_EXTRA_END_ALTER_COPY,
-  /** Abort of writing rows during ALTER TABLE..ALGORITHM=COPY or
-  CREATE..SELCT */
+  /** Start copying in ALTER TABLE...ALGORITHM=COPY or CREATE TABLE..SELECT */
+  HA_EXTRA_BEGIN_COPY,
+  /** Start writing rows during ALTER IGNORE TABLE..ALGORITHM=COPY */
+  HA_EXTRA_BEGIN_ALTER_IGNORE_COPY,
+  /** Finish HA_EXTRA_BEING_COPY or HA_EXTRA_BEGIN_ALTER_IGNORE_COPY */
+  HA_EXTRA_END_COPY,
+  /** Abort HA_EXTRA_BEGIN_COPY or HA_EXTRA_BEGIN_ALTER_IGNORE_COPY */
   HA_EXTRA_ABORT_ALTER_COPY
 };
 

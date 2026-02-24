@@ -4542,7 +4542,7 @@ bool select_insert::prepare_eof()
     /* Don't convert the warning to error in case
     statistics updation fails */
     Abort_on_warning_instant_set save_abort_on_warning(thd, false);
-    error= table->file->extra(HA_EXTRA_END_ALTER_COPY);
+    error= table->file->extra(HA_EXTRA_END_COPY);
     if (error == HA_ERR_FOUND_DUPP_KEY)
     {
       uint key_nr= table->file->get_dup_key(error);
@@ -5165,8 +5165,13 @@ select_create::prepare(List<Item> &_values, SELECT_LEX_UNIT *u)
       !table->s->long_unique_table)
   {
     table->file->ha_start_bulk_insert((ha_rows) 0);
-    if (thd->lex->duplicates == DUP_ERROR && !thd->lex->ignore)
-      table->file->extra(HA_EXTRA_BEGIN_ALTER_COPY);
+    if (thd->lex->duplicates == DUP_ERROR)
+    {
+      static_assert(int{HA_EXTRA_BEGIN_ALTER_IGNORE_COPY} ==
+                    int{HA_EXTRA_BEGIN_COPY} + 1, "");
+      table->file->extra(ha_extra_function(int{HA_EXTRA_BEGIN_COPY} +
+                                           thd->lex->ignore));
+    }
     table->file->extra(HA_EXTRA_WRITE_CACHE);
   }
   thd->abort_on_warning= !info.ignore && thd->is_strict_mode();
